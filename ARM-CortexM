@@ -1,0 +1,54 @@
+#include "stm32f4xx.h"  // CMSIS header for STM32F4 series
+
+// Define task structure
+typedef struct {
+    void (*taskFunction)(void);  // Task function pointer
+    uint32_t* stackPointer;      // Task stack pointer (for context switch)
+    uint8_t status;              // Task status (e.g., running, ready, blocked)
+} Task;
+
+// Define task functions
+void task1() {
+    while (1) {
+        // Task 1 operation
+        // Implement task-specific functionality
+    }
+}
+
+void task2() {
+    while (1) {
+        // Task 2 operation
+        // Implement task-specific functionality
+    }
+}
+
+// Array to hold task information
+Task tasks[] = {
+    {task1, nullptr, 0},  // Task 1 (initialized with default values)
+    {task2, nullptr, 0}   // Task 2 (initialized with default values)
+};
+
+// Simple round-robin task scheduler
+void scheduler() {
+    static uint8_t currentTask = 0;
+
+    while (1) {
+        // Execute current task
+        tasks[currentTask].taskFunction();
+
+        // Perform context switch (round-robin scheduling)
+        currentTask = (currentTask + 1) % (sizeof(tasks) / sizeof(tasks[0]));
+    }
+}
+
+int main() {
+    // Initialize hardware (e.g., system clock, peripherals)
+    SystemInit();
+
+    // Configure system timer for task scheduling (e.g., SysTick timer)
+
+    // Start task scheduler
+    scheduler();
+
+    return 0;
+}
